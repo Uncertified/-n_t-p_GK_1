@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn Tập Sinh Học 9 - KHTN Kết Nối Tri Thức</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f0fdf4;
+            user-select: none;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .opt-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .opt-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .opt-correct {
+            background-color: #dcfce7 !important;
+            border-color: #22c55e !important;
+            color: #15803d !important;
+        }
+
+        .opt-wrong {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #b91c1c !important;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col justify-between overflow-hidden bg-slate-100 text-slate-800">
+
+    <!-- Header & Progress Bar -->
+    <header class="bg-emerald-800 text-white shadow-md flex-none z-10">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-emerald-600 p-2 rounded-lg text-emerald-100">
+                    <i class="fa-solid fa-dna text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Ôn Tập KHTN 9 - Di Truyền & DNA</h1>
+                    <p class="text-xs text-emerald-200">Sách Kết Nối Tri Thức Với Cuộc Sống</p>
+                </div>
+            </div>
+
+            <!-- Jump Selector -->
+            <div class="flex items-center space-x-2">
+                <span class="text-xs text-emerald-200 hidden md:inline">Chọn câu:</span>
+                <select id="jump-select" onchange="jumpToQuestion(this.value)" class="bg-emerald-700 text-white text-sm font-medium py-1.5 px-3 rounded-lg border border-emerald-600 outline-none cursor-pointer">
+                    <!-- Populated by JS -->
+                </select>
+            </div>
+        </div>
+
+        <!-- Progress Bar Container -->
+        <div class="w-full bg-emerald-950/40 h-2">
+            <div id="progress-bar" class="bg-emerald-400 h-2 transition-all duration-300 w-0"></div>
+        </div>
+    </header>
+
+    <!-- Main Content Area (Single Question Slide View - No Page Scroll) -->
+    <main class="flex-1 max-w-4xl w-full mx-auto p-4 flex flex-col justify-center items-center overflow-hidden">
+        <div class="w-full bg-white rounded-2xl shadow-xl border border-slate-200/80 flex flex-col h-full max-h-[720px] overflow-hidden">
+            
+            <!-- Question Header Meta -->
+            <div class="px-6 py-3 bg-slate-50 border-b border-slate-200 flex justify-between items-center flex-none">
+                <span id="part-badge" class="px-3 py-1 bg-emerald-100 text-emerald-800 font-semibold text-xs rounded-full uppercase tracking-wide">
+                    Phần I: Trắc nghiệm
+                </span>
+                <div class="flex items-center space-x-2 text-sm font-bold text-slate-500">
+                    <i class="fa-regular fa-clock text-emerald-600"></i>
+                    <span id="question-index-text">Câu 1 / 44</span>
+                </div>
+            </div>
+
+            <!-- Dynamic Question Content Container (Scrollable internally if prompt is long) -->
+            <div id="question-container" class="flex-1 p-6 overflow-y-auto custom-scrollbar flex flex-col justify-between">
+                <!-- Inner dynamic content rendered by JavaScript -->
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer Navigation (Fixed Control Bar) -->
+    <footer class="bg-white border-t border-slate-200 py-3 px-6 shadow-lg flex-none z-10">
+        <div class="max-w-4xl mx-auto flex justify-between items-center gap-4">
+            <button id="prev-btn" onclick="navigate(-1)" class="flex items-center space-x-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-5 py-2.5 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+                <i class="fa-solid fa-arrow-left text-sm"></i>
+                <span class="hidden sm:inline">Trở lại</span>
+            </button>
+
+            <div class="text-xs text-slate-500 font-medium text-center">
+                Bấm vào đáp án để xem giải thích tức thì
+            </div>
+
+            <button id="next-btn" onclick="navigate(1)" class="flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md shadow-emerald-600/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+                <span>Tiếp theo</span>
+                <i class="fa-solid fa-arrow-right text-sm"></i>
+            </button>
+        </div>
+    </footer>
+
+    <!-- App Logic & Questions Dataset -->
+    <script>
+        // QUESTION BANK (44 QUESTIONS TOTAL)
+        const questions = [
+            // ================= PART I: 20 MCQs =================
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Hiện tượng con cái sinh ra có những đặc điểm khác với bố mẹ và khác nhau ở nhiều chi tiết được gọi là gì?",
+                options: ["Di truyền.", "Biến dị.", "Tính trạng.", "Kiểu hình."],
+                ans: 1,
+                exp: "<b>Giải thích:</b> Biến dị là hiện tượng con cái sinh ra có đặc điểm khác nhau và khác bố mẹ. Di truyền là sự truyền đạt tính trạng từ thế hệ này sang thế hệ khác."
+            },
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Theo Mendel, nhân tố di truyền (ngày nay gọi là gen) nằm trong tế bào quy định yếu tố nào của cơ thể?",
+                options: ["Sự phát triển thể chất.", "Sự di truyền của tính trạng.", "Tốc độ trao đổi chất.", "Số lượng tế bào."],
+                ans: 1,
+                exp: "<b>Giải thích:</b> Các nhân tố di truyền quy định các tính trạng của cơ thể sinh vật và được truyền đạt qua các thế hệ."
+            },
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Phương pháp nghiên cứu độc đáo giúp Mendel phát hiện ra các quy luật di truyền là gì?",
+                options: ["Quan sát dưới kính hiển vi.", "Phân tích các thế hệ lai.", "Gây đột biến nhân tạo.", "Thực hiện thụ tinh trong ống nghiệm."],
+                ans: 1,
+                exp: "<b>Giải thích:</b> Phương pháp phân tích các thế hệ lai là phương pháp độc đáo, quyết định đến sự thành công của Mendel."
+            },
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Kí hiệu kiểu gen nào sau đây biểu diễn thể đồng hợp trội?",
+                options: ["Aa", "aa", "AA", "aA"],
+                ans: 2,
+                exp: "<b>Giải thích:</b> Thể đồng hợp trội chứa 2 allele trội giống nhau (AA)."
+            },
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Cơ thể có kiểu gen Aa khi giảm phân bình thường sẽ tạo ra các loại giao tử với tỉ lệ nào?",
+                options: ["100% A", "100% a", "50% A : 50% a", "75% A : 25% a"],
+                ans: 2,
+                exp: "<b>Giải thích:</b> Do sự phân li độc lập của các allele trong giảm phân, cơ thể dị hợp Aa tạo 2 loại giao tử ngang nhau: 1A : 1a."
+            },
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Phép lai nào sau đây được dùng để kiểm tra kiểu gen của cá thể mang tính trạng trội?",
+                options: ["Lai phân tích.", "Lai thuận nghịch.", "Lai khác loài.", "Tự thụ phấn."],
+                ans: 0,
+                exp: "<b>Giải thích:</b> Lai phân tích là phép lai giữa cá thể mang tính trạng trội cần xác định kiểu gen với cá thể mang tính trạng lặn."
+            },
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Đơn vị cấu tạo nên phân tử DNA là:",
+                options: ["Amino acid.", "Nucleotide.", "Glucose.", "Fatty acid."],
+                ans: 1,
+                exp: "Giải thích: DNA là đại phân tử sinh học cấu tạo theo nguyên tắc đa phân mà đơn phân là nucleotide."
+            },
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Loại nucleotide nào sau đây KHÔNG có trong cấu trúc của phân tử DNA?",
+                options: ["Adenine (A)", "Thymine (T)", "Uracil (U)", "Guanine (G)"],
+                ans: 2,
+                exp: "<b>Giải thích:</b> DNA gồm 4 loại nucleotide: A, T, G, C. Uracil (U) chỉ xuất hiện trong phân tử RNA."
+            },
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Theo nguyên tắc bổ sung (NTBS) giữa hai mạch đơn DNA, các nucleotide liên kết với nhau thành cặp như thế nào?",
+                options: ["A-G; T-C", "A-T; G-C", "A-C; G-T", "A-A; T-T"],
+                ans: 1,
+                exp: "<b>Giải thích:</b> Adenine (A) liên kết bổ sung với Thymine (T) bằng 2 liên kết H; Guanine (G) liên kết với Cytosine (C) bằng 3 liên kết H."
+            },
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Mỗi chu kì xoắn của phân tử DNA có chiều dài 34 Å. Số cặp nucleotide trong 1 chu kì xoắn là:",
+                options: ["5 cặp.", "10 cặp.", "12 cặp.", "20 cặp."],
+                ans: 1,
+                exp: "<b>Giải thích:</b> Một chu kì xoắn DNA gồm 10 cặp nucleotide (20 nucleotide) và có chiều dài 34 Å."
+            },
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Ở lúa, A: thân cao >> a: thân thấp. Cho cây thân cao thuần chủng (AA) lai với cây thân thấp (aa), F1 thu được kiểu hình là:",
+                options: ["100% thân thấp.", "50% cao : 50% thấp.", "100% thân cao.", "75% cao : 25% thấp."],
+                ans: 2,
+                exp: "<b>Giải thích:</b> P: AA x aa → F1: 100% Aa (100% Thân cao)."
+            },
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Cho các cây F1 có kiểu gen Aa tự thụ phấn, tỉ lệ kiểu gen thu được ở đời F2 là:",
+                options: ["1 AA : 2 Aa : 1 aa", "3 AA : 1 aa", "1 AA : 1 aa", "1 Aa : 1 aa"],
+                ans: 0,
+                exp: "<b>Giải thích:</b> Phép lai Aa x Aa cho kết quả F2: 1/4 AA : 2/4 Aa : 1/4 aa."
+            },
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Dòng thuần chủng được định nghĩa là gì?",
+                options: ["Dòng có đặc tính di truyền đồng nhất và ổn định qua các thế hệ.", "Dòng luôn luôn cho kiểu hình lặn.", "Dòng gồm toàn các cá thể dị hợp.", "Dòng được tạo ra bằng phép lai phân tích."],
+                ans: 0,
+                exp: "<b>Giải thích:</b> Dòng thuần chủng có đặc tính di truyền đồng nhất, thế hệ sau sinh ra giống hệt thế hệ trước."
+            },
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Trong phân tử DNA, nếu số nucleotide loại A = 600 thì số nucleotide loại T là:",
+                options: ["300", "600", "1200", "2400"],
+                ans: 1,
+                exp: "<b>Giải thích:</b> Theo NTBS: A = T, do đó T = 600."
+            },
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Một đoạn mạch DNA có trình tự: – A – T – G – C – A –. Trình tự mạch bổ sung với nó là:",
+                options: ["– T – A – C – G – T –", "– A – T – G – C – A –", "– U – A – C – G – U –", "– C – G – T – A – C –"],
+                ans: 0,
+                exp: "<b>Giải thích:</b> Áp dụng NTBS (A-T, T-A, G-C, C-G) ta được chuỗi bổ sung là: – T – A – C – G – T –."
+            },
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Chức năng sinh học quan trọng nhất của phân tử DNA là gì?",
+                options: ["Cung cấp năng lượng cho các hoạt động sống.", "Lưu giữ, bảo quản và truyền đạt thông tin di truyền.", "Xúc tác các phản ứng hóa sinh trong tế bào.", "Vận chuyển chất dinh dưỡng qua màng."],
+                ans: 1,
+                exp: "<b>Giải thích:</b> DNA mang thông tin mã hóa các đặc điểm di truyền của loài và truyền cho thế hệ sau."
+            },
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Khi thực hiện lai phân tích một cá thể mang tính trạng trội thu được F1 có 100% tính trạng trội. Kiểu gen cá thể đó là:",
+                options: ["Đồng hợp trội (AA)", "Dị hợp (Aa)", "Đồng hợp lặn (aa)", "Không xác định được"],
+                ans: 0,
+                exp: "<b>Giải thích:</b> Kết quả lai phân tích đồng tính (100% trội) chứng tỏ cá thể mang tính trạng trội có kiểu gen đồng hợp AA."
+            },
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Tập hợp tất cả các tính trạng của cơ thể sinh vật được gọi là gì?",
+                options: ["Kiểu gen.", "Kiểu hình.", "Mô hình di truyền.", "Nhân tố di truyền."],
+                ans: 1,
+                exp: "<b>Giải thích:</b> Kiểu hình là tổ hợp toàn bộ các tính trạng quan sát được của cơ thể sinh vật."
+            },
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Tính đa dạng và đặc thù của phân tử DNA được quy định bởi yếu tố nào?",
+                options: ["Số lượng, thành phần và trình tự sắp xếp các nucleotide.", "Khối lượng và chiều dài của DNA.", "Số lượng các liên kết hydrogen.", "Vị trí của phân tử DNA trong nhân tế bào."],
+                ans: 0,
+                exp: "<b>Giải thích:</b> Trình tự, số lượng và thành phần nucleotide quyết định tính đặc thù và đa dạng vô tận của DNA."
+            },
+            {
+                type: "mcq",
+                part: "Phần I: Trắc Nghiệm (4 lựa chọn)",
+                q: "Ở đậu Hà Lan, A: hạt vàng >> a: hạt xanh. Cây hạt vàng dị hợp (Aa) tự thụ phấn thu được F1 có tỉ lệ kiểu hình là:",
+                options: ["100% hạt vàng.", "3 hạt vàng : 1 hạt xanh.", "1 hạt vàng : 1 hạt xanh.", "1 hạt vàng : 3 hạt xanh."],
+                ans: 1,
+                exp: "<b>Giải thích:</b> Aa x Aa → 3/4 A- (Vàng) : 1/4 aa (Xanh) = 3 Vàng : 1 Xanh."
+            },
+
+            // ================= PART II: 10 TRUE/FALSE =================
+            {
+                type: "tf",
+                part: "Phần II: Trắc Nghiệm Đúng / Sai",
+                q: "Nhóm học sinh thực hiện mô hình DNA 3D. Mạch thứ nhất của đoạn DNA có trình tự: – A – T – G – C – C – G – A – T – A – G –.",
+                items: [
+                    "Mô hình DNA hoàn chỉnh gồm 2 mạch đơn song song, xoắn đều quanh một trục.",
+                    "Theo nguyên tắc bổ sung, khi lắp mạch 2, A liên kết với G và T liên kết với C.",
+                    "Mạch 2 bổ sung có trình tự là: – T – A – C – G – G – C – T – A – T – C –.",
+                    "Hai phân tử DNA có số lượng nucleotide bằng nhau thì luôn có cấu trúc hoàn toàn giống nhau."
+                ],
+                ans: [true, false, true, false],
+                exp: "<b>Giải thích:</b><br>a) Đúng - Mô tả đúng cấu trúc mô hình DNA.<br>b) Sai - A liên kết với T, G liên kết với C.<br>c) Đúng - Đúng theo nguyên tắc bổ sung.<br>d) Sai - Cấu trúc còn phụ thuộc vào trình tự sắp xếp các nucleotide."
+            },
+            {
+                type: "tf",
+                part: "Phần II: Trắc Nghiệm Đúng / Sai",
+                q: "Xét thí nghiệm lai một cặp tính trạng của Mendel về màu hoa đậu Hà Lan (Hoa đỏ x Hoa trắng):",
+                items: [
+                    "Mỗi tính trạng của cơ thể do một cặp nhân tố di truyền quy định.",
+                    "Các nhân tố di truyền hòa trộn vào nhau khi cơ thể tạo giao tử.",
+                    "F2 có sự phân li kiểu hình theo tỉ lệ 3 Trội : 1 Lặn.",
+                    "Tỉ lệ kiểu gen ở F2 thu được là 1 AA : 2 Aa : 1 aa."
+                ],
+                ans: [true, false, true, true],
+                exp: "<b>Giải thích:</b><br>b) Sai - Các nhân tố di truyền phân li độc lập và giữ nguyên bản chất, không hòa trộn."
+            },
+            {
+                type: "tf",
+                part: "Phần II: Trắc Nghiệm Đúng / Sai",
+                q: "Khi nói về cấu trúc và đặc điểm của phân tử DNA:",
+                items: [
+                    "Đơn phân cấu tạo nên DNA là các amino acid.",
+                    "Mỗi chu kì xoắn của DNA bao gồm 10 cặp nucleotide.",
+                    "Các nucleotide trên 2 mạch đơn liên kết với nhau bằng các liên kết hydrogen.",
+                    "Đường kính của chuỗi xoắn kép DNA là 20 Å."
+                ],
+                ans: [false, true, true, true],
+                exp: "<b>Giải thích:</b><br>a) Sai - Đơn phân của DNA là các nucleotide."
+            },
+            {
+                type: "tf",
+                part: "Phần II: Trắc Nghiệm Đúng / Sai",
+                q: "Về quy trình và ý nghĩa của phép lai phân tích:",
+                items: [
+                    "Là phép lai giữa cá thể mang tính trạng trội với cá thể mang tính trạng lặn.",
+                    "Mục đích chính là để xác định kiểu gen của cá thể mang tính trạng lặn.",
+                    "Nếu F1 phân li tỉ lệ 1 : 1 thì cá thể mang tính trạng trội có kiểu gen dị hợp (Aa).",
+                    "Nếu F1 đồng tính 100% thì cá thể mang tính trạng trội có kiểu gen đồng hợp (AA)."
+                ],
+                ans: [true, false, true, true],
+                exp: "<b>Giải thích:</b><br>b) Sai - Mục đích chính là để xác định kiểu gen của cá thể mang tính trạng TRỘI."
+            },
+            {
+                type: "tf",
+                part: "Phần II: Trắc Nghiệm Đúng / Sai",
+                q: "Một phân tử DNA có tổng số 3000 nucleotide, trong đó số nucleotide loại A = 600:",
+                items: [
+                    "Số nucleotide loại T của phân tử DNA này là 600.",
+                    "Số nucleotide loại G của phân tử DNA này là 900.",
+                    "Tổng số liên kết hydrogen của phân tử DNA là 3600.",
+                    "Chiều dài của phân tử DNA này là 5100 Å."
+                ],
+                ans: [true, true, false, true],
+                exp: "<b>Giải thích:</b><br>c) Sai - H = 2A + 3G = 2(600) + 3(900) = 3900 liên kết hydrogen."
+            },
+            {
+                type: "tf",
+                part: "Phần II: Trắc Nghiệm Đúng / Sai",
+                q: "Khi nói về khái niệm kiểu gen và kiểu hình trong di truyền học:",
+                items: [
+                    "Kiểu gen là tổ hợp toàn bộ các gen trong tế bào của cơ thể sinh vật.",
+                    "Kiểu hình là kết quả tương tác giữa kiểu gen và môi trường.",
+                    "Cơ thể dị hợp chứa 2 allele giống hệt nhau (ví dụ: AA hoặc aa).",
+                    "Tính trạng lặn chỉ được biểu hiện ra kiểu hình khi kiểu gen ở trạng thái đồng hợp lặn."
+                ],
+                ans: [true, true, false, true],
+                exp: "<b>Giải thích:</b><br>c) Sai - Cơ thể dị hợp chứa 2 allele khác nhau (Aa)."
+            },
+            {
+                type: "tf",
+                part: "Phần II: Trắc Nghiệm Đúng / Sai",
+                q: "Xét quá trình nhân đôi của phân tử DNA:",
+                items: [
+                    "Quá trình nhân đôi diễn ra theo nguyên tắc bổ sung và nguyên tắc bán bảo toàn.",
+                    "Bán bảo toàn có nghĩa là hai phân tử DNA con được tổng hợp hoàn toàn mới.",
+                    "Từ 1 phân tử DNA ban đầu, qua 3 lần nhân đôi liên tiếp tạo ra 8 phân tử DNA con.",
+                    "Nguyên tắc bổ sung đảm bảo thông tin di truyền được truyền đạt chính xác."
+                ],
+                ans: [true, false, true, true],
+                exp: "<b>Giải thích:</b><br>b) Sai - Bán bảo toàn nghĩa là trong mỗi DNA con có 1 mạch cũ của mẹ và 1 mạch mới."
+            },
+            {
+                type: "tf",
+                part: "Phần II: Trắc Nghiệm Đúng / Sai",
+                q: "Phân tích một gen có tổng số 120 chu kì xoắn:",
+                items: [
+                    "Tổng số nucleotide của gen là 2400.",
+                    "Chiều dài của gen là 4080 Å.",
+                    "Số nucleotide trên một mạch đơn của gen là 1200.",
+                    "Nếu %A = 20% thì %G = 30%."
+                ],
+                ans: [true, true, true, true],
+                exp: "<b>Giải thích:</b> Cả 4 phát biểu đều chính xác.<br>N = 120x20=2400. L = 120x34=4080Å. %G = 50% - 20% = 30%."
+            },
+            {
+                type: "tf",
+                part: "Phần II: Trắc Nghiệm Đúng / Sai",
+                q: "Ở một loài thực vật, gen A quy định hoa đỏ trội hoàn toàn so với gen a quy định hoa trắng:",
+                items: [
+                    "Cây hoa đỏ có thể có kiểu gen AA hoặc Aa.",
+                    "Cho cây hoa đỏ (AA) lai với cây hoa trắng (aa) thu được 100% hoa đỏ.",
+                    "Cho 2 cây hoa đỏ dị hợp (Aa) giao phấn, thu được 25% hoa trắng ở F1.",
+                    "Muốn đời con không xuất hiện hoa trắng thì P nhất thiết cả 2 cây đều phải có kiểu gen AA."
+                ],
+                ans: [true, true, true, false],
+                exp: "<b>Giải thích:</b><br>d) Sai - Chỉ cần 1 trong 2 cây bố mẹ mang kiểu gen AA (ví dụ AA x Aa) thì đời con đã không xuất hiện hoa trắng."
+            },
+            {
+                type: "tf",
+                part: "Phần II: Trắc Nghiệm Đúng / Sai",
+                q: "Khi so sánh nucleic acid (DNA và RNA):",
+                items: [
+                    "Nucleic acid gồm 2 loại chính là DNA và RNA.",
+                    "Phân tử RNA thường có cấu trúc chuỗi xoắn kép gồm 2 mạch song song.",
+                    "Các đơn phân của RNA bao gồm 4 loại: A, U, G, C.",
+                    "DNA là khuôn mẫu để tổng hợp nên RNA trong tế bào."
+                ],
+                ans: [true, false, true, true],
+                exp: "<b>Giải thích:</b><br>b) Sai - RNA thông thường có cấu trúc dạng chuỗi đơn 1 mạch."
+            },
+
+            // ================= PART III: 10 SHORT ANSWERS =================
+            {
+                type: "sa",
+                part: "Phần III: Trả Lời Ngắn",
+                q: "Ở đậu Hà Lan, gen A: hoa tím >> a: hoa trắng. Quan sát danh sách kiểu gen của 7 cây: AA, Aa, aa, Aa, AA, aa, Aa. Hỏi có bao nhiêu cây VỪA CÓ KIỂU HÌNH HOA TÍM, VỪA CÓ KIỂU GEN ĐỒNG HỢP?",
+                ans: "2",
+                exp: "<b>Giải thích:</b> Cây hoa tím đồng hợp có kiểu gen AA. Trong danh sách có đúng 2 cây mang kiểu gen AA."
+            },
+            {
+                type: "sa",
+                part: "Phần III: Trả Lời Ngắn",
+                q: "Một phân tử DNA có 2000 nucleotide, trong đó số nucleotide loại Adenine (A) chiếm 30%. Tính số nucleotide loại Cytosine (C).",
+                ans: "400",
+                exp: "<b>Giải thích:</b> %C = 50% - 30% = 20%. Số lượng C = 20% x 2000 = 400 nucleotide."
+            },
+            {
+                type: "sa",
+                part: "Phần III: Trả Lời Ngắn",
+                q: "Một gen có chiều dài L = 5100 Å. Số chu kì xoắn của gen này là bao nhiêu?",
+                ans: "150",
+                exp: "<b>Giải thích:</b> N = (5100 / 3.4) x 2 = 3000 nucleotide. Số chu kì xoắn C = N / 20 = 150."
+            },
+            {
+                type: "sa",
+                part: "Phần III: Trả Lời Ngắn",
+                q: "Cho phép lai P: Aa x Aa. Nếu F1 thu được tổng cộng 400 cây, theo lý thuyết số cây có kiểu hình lặn (aa) là bao nhiêu cây?",
+                ans: "100",
+                exp: "<b>Giải thích:</b> Tỉ lệ kiểu hình lặn (aa) = 1/4. Số cây lặn = 400 x (1/4) = 100 cây."
+            },
+            {
+                type: "sa",
+                part: "Phần III: Trả Lời Ngắn",
+                q: "Một phân tử DNA ban đầu thực hiện nhân đôi liên tiếp 4 lần. Tổng số phân tử DNA con tạo thành là bao nhiêu?",
+                ans: "16",
+                exp: "<b>Giải thích:</b> Số phân tử DNA con = 2^4 = 16 phân tử."
+            },
+            {
+                type: "sa",
+                part: "Phần III: Trả Lời Ngắn",
+                q: "Một đoạn mạch đơn DNA có chứa: 3A, 2T, 2G, 2C. Tổng số liên kết hydrogen hình thành khi đoạn mạch này liên kết bổ sung với mạch thứ 2 là bao nhiêu?",
+                ans: "22",
+                exp: "<b>Giải thích:</b><br>Số cặp A-T = 3 + 2 = 5 cặp (5 x 2 = 10 liên kết H).<br>Số cặp G-C = 2 + 2 = 4 cặp (4 x 3 = 12 liên kết H).<br>Tổng liên kết H = 10 + 12 = 22."
+            },
+            {
+                type: "sa",
+                part: "Phần III: Trả Lời Ngắn",
+                q: "Ở ruồi giấm, B: mắt đỏ >> b: mắt trắng. Phép lai P: Bb x Bb thu được 800 cá thể F1. Số cá thể ruồi mắt đỏ theo lý thuyết là bao nhiêu?",
+                ans: "600",
+                exp: "<b>Giải thích:</b> Tỉ lệ ruồi mắt đỏ (B-) = 3/4. Số ruồi mắt đỏ = 800 x (3/4) = 600 cá thể."
+            },
+            {
+                type: "sa",
+                part: "Phần III: Trả Lời Ngắn",
+                q: "Một gen có tổng số N = 2400 nucleotide và có A = 400. Tính tổng số liên kết hydrogen (H) của gen.",
+                ans: "3200",
+                exp: "<b>Giải thích:</b> G = (2400 - 2x400)/2 = 800. H = 2A + 3G = 2(400) + 3(800) = 3200 liên kết H."
+            },
+            {
+                type: "sa",
+                part: "Phần III: Trả Lời Ngắn",
+                q: "Một đoạn DNA có 120 chu kì xoắn. Chiều dài của đoạn DNA này tính theo đơn vị Nanomet (nm) là bao nhiêu?",
+                ans: "408",
+                exp: "<b>Giải thích:</b> L = 120 x 34 Å = 4080 Å. Đổi sang nm: 4080 / 10 = 408 nm."
+            },
+            {
+                type: "sa",
+                part: "Phần III: Trả Lời Ngắn",
+                q: "Thực hiện phép lai phân tích một cây quả tròn trội (A-), F1 thu được tỉ lệ 1 quả tròn : 1 quả dài. Có bao nhiêu sơ đồ lai P thỏa mãn?",
+                ans: "1",
+                exp: "<b>Giải thích:</b> Tỉ lệ 1:1 chứng tỏ cây quả tròn P có kiểu gen dị hợp Aa. Sơ đồ lai duy nhất: Aa x aa."
+            },
+
+            // ================= PART IV: 4 ESSAYS =================
+            {
+                type: "essay",
+                part: "Phần IV: Tự Luận",
+                q: "Bài 1 (Toán lai 1 cặp tính trạng):\nỞ ngô, gen A quy định hạt vàng trội hoàn toàn so với gen a quy định hạt trắng.\na) Cho ngô hạt vàng thuần chủng lai với ngô hạt trắng. Lập sơ đồ lai từ P đến F2.\nb) Cho các cây hạt vàng F2 tự thụ phấn, xác định tỉ lệ kiểu hình thu được ở đời F3.",
+                exp: `
+                    <div class="space-y-2 text-slate-700">
+                        <p class="font-bold text-emerald-800">a) Sơ đồ lai từ P đến F2:</p>
+                        <p>• P thuần chủng: AA (vàng)  ×  aa (trắng)</p>
+                        <p>• G<sub>P</sub>: A  ;  a</p>
+                        <p>• F1: 100% Aa (100% hạt vàng)</p>
+                        <p>• F1 × F1: Aa  ×  Aa</p>
+                        <p>• F2 kiểu gen: 1/4 AA : 2/4 Aa : 1/4 aa</p>
+                        <p>• F2 kiểu hình: 3/4 Hạt vàng : 1/4 Hạt trắng.</p>
+                        <hr class="my-2 border-slate-200">
+                        <p class="font-bold text-emerald-800">b) Các cây hạt vàng F2 tự thụ phấn:</p>
+                        <p>Cây hạt vàng F2 gồm có tỉ lệ: 1/3 AA và 2/3 Aa.</p>
+                        <p>• 1/3 AA tự thụ → 1/3 AA (hạt vàng).</p>
+                        <p>• 2/3 Aa tự thụ → 2/3 × (1/4 AA : 2/4 Aa : 1/4 aa) = 1/6 AA : 2/6 Aa : 1/6 aa.</p>
+                        <p><b>Tỉ lệ F3:</b> Hạt trắng (aa) = 1/6. Hạt vàng (A-) = 1 - 1/6 = 5/6.</p>
+                        <p class="font-semibold text-emerald-700">⇒ Kết quả F3: 5 Hạt vàng : 1 Hạt trắng.</p>
+                    </div>
+                `
+            },
+            {
+                type: "essay",
+                part: "Phần IV: Tự Luận",
+                q: "Bài 2 (Toán lai phân tích):\nỞ lợn, lông đen (A) trội hoàn toàn so với lông trắng (a). Một người chăn nuôi có một con lợn đực lông đen, hãy đề xuất phương pháp để kiểm tra con lợn đực này có thuần chủng hay không và giải thích kết quả.",
+                exp: `
+                    <div class="space-y-2 text-slate-700">
+                        <p class="font-bold text-emerald-800">Phương pháp thực hiện:</p>
+                        <p>Thực hiện <b>Phép lai phân tích</b> bằng cách cho con lợn đực lông đen (A-) lai với con lợn cái lông trắng (aa).</p>
+                        <hr class="my-2 border-slate-200">
+                        <p class="font-bold text-emerald-800">Biện luận kết quả:</p>
+                        <p>• <b>Trường hợp 1:</b> Nếu đời con sinh ra đồng tính 100% lợn lông đen ➔ Lợn đực lông đen thuần chủng (kiểu gen <b>AA</b>).</p>
+                        <p class="text-xs bg-slate-100 p-2 rounded">Sơ đồ lai: P: AA (đen) × aa (trắng) → F1: 100% Aa (đen).</p>
+                        <p>• <b>Trường hợp 2:</b> Nếu đời con phân tính có cả lợn lông đen và lợn lông trắng (tỉ lệ 1 : 1) ➔ Lợn đực lông đen không thuần chủng (kiểu gen <b>Aa</b>).</p>
+                        <p class="text-xs bg-slate-100 p-2 rounded">Sơ đồ lai: P: Aa (đen) × aa (trắng) → F1: 1 Aa (đen) : 1 aa (trắng).</p>
+                    </div>
+                `
+            },
+            {
+                type: "essay",
+                part: "Phần IV: Tự Luận",
+                q: "Bài 3 (Toán ngược xác định kiểu gen P):\nỞ chuột, A quy định mắt đen trội hoàn toàn so với a quy định mắt đỏ. Cho giao phối cặp chuột P thu được F1 gồm 301 chuột mắt đen và 99 chuột mắt đỏ.\na) Biện luận và xác định kiểu gen của P.\nb) Muốn đời con F1 thu được 100% chuột mắt đen thì P có thể có những kiểu gen nào?",
+                exp: `
+                    <div class="space-y-2 text-slate-700">
+                        <p class="font-bold text-emerald-800">a) Xác định kiểu gen P:</p>
+                        <p>• Xét tỉ lệ kiểu hình F1: Mắt đen / Mắt đỏ = 301 / 99 ≈ 3 : 1.</p>
+                        <p>• F1 có tỉ lệ 3 : 1 là nghiệm của quy luật phân li Mendel.</p>
+                        <p>⇒ Cả 2 cơ thể bố mẹ P đều có kiểu gen dị hợp: <b>Aa (Mắt đen)</b>.</p>
+                        <p class="text-xs bg-slate-100 p-2 rounded">Sơ đồ lai P: Aa × Aa → F1: 3 A- (đen) : 1 aa (đỏ).</p>
+                        <hr class="my-2 border-slate-200">
+                        <p class="font-bold text-emerald-800">b) Để F1 thu được 100% mắt đen (A-):</p>
+                        <p>Ít nhất 1 trong 2 cơ thể P phải truyền giao tử A cho đời con ➔ P phải chứa kiểu gen đồng hợp trội <b>AA</b>.</p>
+                        <p><b>Các phép lai P thỏa mãn:</b></p>
+                        <p>1. AA × AA → 100% AA (mắt đen)</p>
+                        <p>2. AA × Aa → 50% AA : 50% Aa (100% mắt đen)</p>
+                        <p>3. AA × aa → 100% Aa (mắt đen)</p>
+                    </div>
+                `
+            },
+            {
+                type: "essay",
+                part: "Phần IV: Tự Luận",
+                q: "Bài 4 (Toán cấu trúc DNA và đột biến):\nMột gen B có chiều dài L = 5100 Å và có tổng số 3900 liên kết hydrogen.\na) Tính số lượng từng loại nucleotide của gen B.\nb) Gen B bị đột biến thành gen b. Gen b có cùng chiều dài nhưng ít hơn gen B 2 liên kết hydrogen. Xác định số nucleotide từng loại của gen b.",
+                exp: `
+                    <div class="space-y-2 text-slate-700">
+                        <p class="font-bold text-emerald-800">a) Số lượng nucleotide của gen B:</p>
+                        <p>• Tổng số nucleotide: N = (5100 / 3.4) × 2 = 3000 nucleotide.</p>
+                        <p>• Ta có hệ phương trình:</p>
+                        <p class="pl-4">2A + 2G = 3000</p>
+                        <p class="pl-4">2A + 3G = 3900</p>
+                        <p>⇒ Giải hệ ta được: <b>G = C = 900</b> nucleotide; <b>A = T = 600</b> nucleotide.</p>
+                        <hr class="my-2 border-slate-200">
+                        <p class="font-bold text-emerald-800">b) Số lượng nucleotide của gen b (gen đột biến):</p>
+                        <p>• Gen b có chiều dài không đổi ⇒ Tổng số N = 3000 (không thay đổi).</p>
+                        <p>• Giảm 2 liên kết H nhưng số N không đổi ⇒ Đột biến thay thế <b>2 cặp G-C bằng 2 cặp A-T</b>.</p>
+                        <p><b>Số nucleotide của gen b:</b></p>
+                        <p>• A = T = 600 + 2 = <b>602 nucleotide</b>.</p>
+                        <p>• G = C = 900 - 2 = <b>898 nucleotide</b>.</p>
+                    </div>
+                `
+            }
+        ];
+
+        // STATE VARS
+        let currentIndex = 0;
+        let userState = {}; // Stores user choices/inputs
+
+        // INITIALIZATION
+        window.onload = () => {
+            initJumpSelect();
+            renderQuestion();
+        };
+
+        function initJumpSelect() {
+            const select = document.getElementById("jump-select");
+            select.innerHTML = "";
+            questions.forEach((q, idx) => {
+                const opt = document.createElement("option");
+                opt.value = idx;
+                opt.textContent = `Câu ${idx + 1} (${q.type.toUpperCase()})`;
+                select.appendChild(opt);
+            });
+        }
+
+        function updateProgress() {
+            const pct = ((currentIndex + 1) / questions.length) * 100;
+            document.getElementById("progress-bar").style.width = `${pct}%`;
+            document.getElementById("question-index-text").innerText = `Câu ${currentIndex + 1} / ${questions.length}`;
+            document.getElementById("jump-select").value = currentIndex;
+
+            // Nav buttons state
+            document.getElementById("prev-btn").disabled = (currentIndex === 0);
+            document.getElementById("next-btn").disabled = (currentIndex === questions.length - 1);
+        }
+
+        function navigate(dir) {
+            const nextIdx = currentIndex + dir;
+            if (nextIdx >= 0 && nextIdx < questions.length) {
+                currentIndex = nextIdx;
+                renderQuestion();
+            }
+        }
+
+        function jumpToQuestion(idx) {
+            currentIndex = parseInt(idx);
+            renderQuestion();
+        }
+
+        // MAIN RENDERER
+        function renderQuestion() {
+            updateProgress();
+            const q = questions[currentIndex];
+            const container = document.getElementById("question-container");
+            document.getElementById("part-badge").innerText = q.part;
+
+            if (q.type === "mcq") {
+                renderMCQ(q, container);
+            } else if (q.type === "tf") {
+                renderTF(q, container);
+            } else if (q.type === "sa") {
+                renderSA(q, container);
+            } else if (q.type === "essay") {
+                renderEssay(q, container);
+            }
+        }
+
+        // 1. RENDER MCQ
+        function renderMCQ(q, container) {
+            const saved = userState[currentIndex];
+            const isAnswered = saved !== undefined;
+
+            let html = `
+                <div class="space-y-4">
+                    <h2 class="text-base sm:text-lg font-semibold text-slate-800 leading-snug">${q.q}</h2>
+                    <div class="grid grid-cols-1 gap-3">
+            `;
+
+            q.options.forEach((opt, idx) => {
+                let btnStyle = "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100 hover:border-slate-300";
+                
+                if (isAnswered) {
+                    if (idx === q.ans) {
+                        btnStyle = "opt-correct font-semibold";
+                    } else if (saved === idx) {
+                        btnStyle = "opt-wrong";
+                    } else {
+                        btnStyle = "bg-slate-50 border-slate-200 text-slate-400 opacity-60";
+                    }
+                }
+
+                html += `
+                    <button onclick="answerMCQ(${idx})" ${isAnswered ? 'disabled' : ''} 
+                            class="opt-btn w-full text-left p-3.5 rounded-xl border-2 flex items-center space-x-3 text-sm sm:text-base ${btnStyle}">
+                        <span class="w-7 h-7 rounded-lg bg-white/80 border border-slate-300 flex items-center justify-center font-bold text-xs shrink-0">
+                            ${String.fromCharCode(65 + idx)}
+                        </span>
+                        <span>${opt}</span>
+                    </button>
+                `;
+            });
+
+            html += `</div></div>`;
+
+            // Explanation Box
+            if (isAnswered) {
+                html += `
+                    <div class="mt-4 p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-500 text-slate-700 text-sm space-y-1 animate-fadeIn">
+                        <div class="font-bold text-emerald-800 flex items-center space-x-2">
+                            <i class="fa-solid fa-lightbulb text-amber-500"></i>
+                            <span>Giải Thích Kiến Thức:</span>
+                        </div>
+                        <div>${q.exp}</div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function answerMCQ(idx) {
+            userState[currentIndex] = idx;
+            renderQuestion();
+        }
+
+        // 2. RENDER TRUE / FALSE
+        function renderTF(q, container) {
+            const saved = userState[currentIndex] || [null, null, null, null];
+            const isSubmitted = saved.every(v => v !== null);
+
+            let html = `
+                <div class="space-y-4">
+                    <h2 class="text-base sm:text-lg font-semibold text-slate-800 leading-snug">${q.q}</h2>
+                    
+                    <div class="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-100 text-slate-600 font-semibold border-b border-slate-200">
+                                <tr>
+                                    <th class="p-3">Ý nhận định</th>
+                                    <th class="p-3 text-center w-28">Lựa chọn</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+            `;
+
+            q.items.forEach((item, idx) => {
+                const userChoice = saved[idx];
+                const correct = q.ans[idx];
+
+                let trueBtnClass = "bg-slate-100 text-slate-600 hover:bg-emerald-100 hover:text-emerald-700";
+                let falseBtnClass = "bg-slate-100 text-slate-600 hover:bg-rose-100 hover:text-rose-700";
+
+                if (userChoice !== null) {
+                    if (userChoice === true) {
+                        trueBtnClass = (correct === true) ? "bg-emerald-600 text-white font-bold" : "bg-rose-500 text-white font-bold";
+                    }
+                    if (userChoice === false) {
+                        falseBtnClass = (correct === false) ? "bg-emerald-600 text-white font-bold" : "bg-rose-500 text-white font-bold";
+                    }
+                }
+
+                html += `
+                    <tr>
+                        <td class="p-3 text-slate-700 font-medium"><b>${String.fromCharCode(97 + idx)})</b> ${item}</td>
+                        <td class="p-3 text-center shrink-0">
+                            <div class="inline-flex rounded-lg p-0.5 bg-slate-100 border border-slate-200 space-x-1">
+                                <button onclick="answerTF(${idx}, true)" ${isSubmitted ? 'disabled' : ''} 
+                                        class="px-2.5 py-1 text-xs rounded-md transition-all ${trueBtnClass}">Đ</button>
+                                <button onclick="answerTF(${idx}, false)" ${isSubmitted ? 'disabled' : ''} 
+                                        class="px-2.5 py-1 text-xs rounded-md transition-all ${falseBtnClass}">S</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table></div>`;
+
+            if (!isSubmitted) {
+                html += `
+                    <button onclick="submitTF()" class="mt-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-all">
+                        Kiểm Tra Kết Quả
+                    </button>
+                `;
+            } else {
+                html += `
+                    <div class="mt-4 p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-500 text-slate-700 text-sm space-y-1">
+                        <div class="font-bold text-emerald-800 flex items-center space-x-2">
+                            <i class="fa-solid fa-lightbulb text-amber-500"></i>
+                            <span>Giải Thích Chi Tiết:</span>
+                        </div>
+                        <div>${q.exp}</div>
+                    </div>
+                `;
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        function answerTF(itemIdx, val) {
+            if (!userState[currentIndex]) userState[currentIndex] = [null, null, null, null];
+            userState[currentIndex][itemIdx] = val;
+            renderQuestion();
+        }
+
+        function submitTF() {
+            const current = userState[currentIndex];
+            if (!current || current.includes(null)) {
+                alert("Vui lòng chọn Đúng (Đ) hoặc Sai (S) cho tất cả 4 ý!");
+                return;
+            }
+            renderQuestion();
+        }
+
+        // 3. RENDER SHORT ANSWER
+        function renderSA(q, container) {
+            const saved = userState[currentIndex];
+            const isSubmitted = saved !== undefined;
+            const isCorrect = isSubmitted && (saved.trim().toLowerCase() === q.ans.trim().toLowerCase());
+
+            let html = `
+                <div class="space-y-4">
+                    <h2 class="text-base sm:text-lg font-semibold text-slate-800 leading-snug">${q.q}</h2>
+                    
+                    <div class="flex gap-2">
+                        <input type="text" id="sa-input" value="${saved || ''}" ${isSubmitted ? 'disabled' : ''}
+                               placeholder="Nhập kết quả (chỉ nhập số/từ ngắn)..." 
+                               class="flex-1 border-2 border-slate-300 rounded-xl px-4 py-2.5 outline-none focus:border-emerald-500 text-slate-800 font-medium">
+                        ${!isSubmitted ? `
+                            <button onclick="submitSA()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded-xl transition-all">
+                                Nộp Bài
+                            </button>
+                        ` : ''}
+                    </div>
+            `;
+
+            if (isSubmitted) {
+                html += `
+                    <div class="p-3 rounded-xl ${isCorrect ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-rose-100 text-rose-800 border border-rose-300'} font-semibold text-sm flex items-center space-x-2">
+                        <i class="fa-solid ${isCorrect ? 'fa-circle-check text-emerald-600' : 'fa-circle-xmark text-rose-600'} text-lg"></i>
+                        <span>${isCorrect ? 'Chính xác!' : `Chưa đúng. Đáp án chuẩn là: ${q.ans}`}</span>
+                    </div>
+
+                    <div class="p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-500 text-slate-700 text-sm space-y-1">
+                        <div class="font-bold text-emerald-800 flex items-center space-x-2">
+                            <i class="fa-solid fa-lightbulb text-amber-500"></i>
+                            <span>Hướng Dẫn Chi Tiết:</span>
+                        </div>
+                        <div>${q.exp}</div>
+                    </div>
+                `;
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        function submitSA() {
+            const val = document.getElementById("sa-input").value;
+            if (!val.trim()) {
+                alert("Vui lòng nhập câu trả lời trước khi gửi!");
+                return;
+            }
+            userState[currentIndex] = val;
+            renderQuestion();
+        }
+
+        // 4. RENDER ESSAY
+        function renderEssay(q, container) {
+            if (!userState[currentIndex]) userState[currentIndex] = { input: "", showExp: false };
+            const state = userState[currentIndex];
+
+            let html = `
+                <div class="space-y-4">
+                    <h2 class="text-base sm:text-lg font-semibold text-slate-800 leading-snug whitespace-pre-line">${q.q}</h2>
+                    
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-500 mb-1">Ghi chép/Tóm tắt lời giải của bạn (tùy chọn):</label>
+                        <textarea id="essay-input" rows="3" oninput="saveEssayInput(this.value)"
+                                  placeholder="Nhập nháp bài làm của bạn vào đây..." 
+                                  class="w-full border-2 border-slate-200 rounded-xl p-3 outline-none focus:border-emerald-500 text-sm text-slate-700">${state.input}</textarea>
+                    </div>
+
+                    <button onclick="toggleEssayExp()" class="flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-all shadow-sm">
+                        <i class="fa-solid ${state.showExp ? 'fa-eye-slash' : 'fa-eye'}"></i>
+                        <span>${state.showExp ? 'Ẩn Hướng Dẫn Giải' : 'Xem Đáp Án & Lời Giải Chi Tiết'}</span>
+                    </button>
+            `;
+
+            if (state.showExp) {
+                html += `
+                    <div class="p-4 rounded-xl bg-emerald-50 border-l-4 border-emerald-500 text-slate-800 text-sm animate-fadeIn">
+                        <div class="font-bold text-emerald-900 mb-2 flex items-center space-x-2 border-b border-emerald-200 pb-2">
+                            <i class="fa-solid fa-graduation-cap text-emerald-600 text-base"></i>
+                            <span>Lời Giải Chi Tiết SGK:</span>
+                        </div>
+                        ${q.exp}
+                    </div>
+                `;
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        function saveEssayInput(val) {
+            if (!userState[currentIndex]) userState[currentIndex] = { input: "", showExp: false };
+            userState[currentIndex].input = val;
+        }
+
+        function toggleEssayExp() {
+            if (!userState[currentIndex]) userState[currentIndex] = { input: "", showExp: false };
+            userState[currentIndex].showExp = !userState[currentIndex].showExp;
+            renderQuestion();
+        }
+    </script>
+</body>
+</html>
