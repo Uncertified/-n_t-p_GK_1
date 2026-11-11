@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn Tập Giữa Kì 1 KHTN 9 - Sinh Học | Cô Thùy Dương Lê</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti for Celebration -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emerald: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        },
+                        teal: {
+                            50: '#f0fdfa',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-content.active {
+            max-height: 2000px;
+            transition: max-height 0.5s ease-in;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col antialiased selection:bg-emerald-200">
+
+    <!-- TOP HEADER -->
+    <header class="bg-gradient-to-r from-emerald-800 via-teal-800 to-emerald-900 text-white shadow-md sticky top-0 z-40 shrink-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="bg-white/10 p-2 rounded-xl backdrop-blur-md text-emerald-300">
+                    <i class="fa-solid fa-dna text-2xl"></i>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="bg-emerald-500/30 text-emerald-200 text-[10px] px-2 py-0.5 rounded-md uppercase font-bold tracking-wider">THCS TRẦN PHÚ - TỔ KHTN</span>
+                        <span class="text-xs text-amber-300 font-semibold hidden sm:inline"><i class="fa-solid fa-chalkboard-user mr-1"></i>GVHD: Cô Thùy Dương Lê</span>
+                    </div>
+                    <h1 class="text-base sm:text-lg font-bold tracking-tight">ÔN TẬP KHTN 9 - SINH HỌC (GIỮA KÌ I)</h1>
+                </div>
+            </div>
+
+            <!-- TAB NAV -->
+            <nav class="flex items-center space-x-1 bg-emerald-950/40 p-1 rounded-xl backdrop-blur-sm text-xs sm:text-sm">
+                <button onclick="switchTab('theory')" id="nav-theory" class="px-3 py-1.5 rounded-lg font-medium transition-all duration-200 bg-white text-emerald-800 shadow">
+                    <i class="fa-solid fa-book-open mr-1.5"></i>Lý Thuyết
+                </button>
+                <button onclick="switchTab('tools')" id="nav-tools" class="px-3 py-1.5 rounded-lg font-medium transition-all duration-200 text-emerald-100 hover:text-white">
+                    <i class="fa-solid fa-flask mr-1.5"></i>Công Cụ Sinh Học
+                </button>
+                <button onclick="switchTab('exam')" id="nav-exam" class="px-3 py-1.5 rounded-lg font-medium transition-all duration-200 text-emerald-100 hover:text-white">
+                    <i class="fa-solid fa-pen-to-square mr-1.5"></i>Thi Thử Luyện Tập
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-2 sm:px-6 lg:px-8 py-4 flex flex-col justify-start">
+
+        <!-- TAB 1: LÝ THUYẾT TRỌNG TÂM -->
+        <section id="tab-theory" class="space-y-5">
+            <div class="bg-white border border-emerald-200 rounded-2xl p-5 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">Sách KHTN 9 - Kết nối tri thức</span>
+                    <h2 class="text-xl font-bold text-slate-900 mt-0.5">Nội Dung Ôn Tập Chương XI (Bài 36, 37, 38)</h2>
+                    <p class="text-xs text-slate-600 mt-1">Di truyền học Mendel • Cơ sở phân tử của hiện tượng di truyền • Mô hình DNA 3D</p>
+                </div>
+                <div class="bg-emerald-50 border border-emerald-200 px-4 py-2.5 rounded-xl text-xs text-emerald-900 flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-chalkboard-teacher"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold">Giáo viên hướng dẫn:</p>
+                        <p class="text-emerald-700 font-semibold">Cô Thùy Dương Lê (THCS Trần Phú)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACCORDIONS -->
+            <div class="space-y-3">
+                <!-- BÀI 36 -->
+                <div class="border border-slate-200 rounded-2xl bg-white shadow-sm overflow-hidden">
+                    <button onclick="toggleAccordion('acc-36')" class="w-full px-5 py-3.5 text-left font-semibold text-emerald-900 bg-slate-50 hover:bg-emerald-50/50 flex justify-between items-center transition-colors">
+                        <span class="flex items-center text-sm sm:text-base">
+                            <span class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 inline-flex items-center justify-center font-bold mr-3 text-xs">36</span>
+                            Bài 36: Khái Quát Về Di Truyền Học
+                        </span>
+                        <i id="icon-acc-36" class="fa-solid fa-chevron-down text-emerald-600 transition-transform duration-300 text-xs"></i>
+                    </button>
+                    <div id="acc-36" class="accordion-content px-5 py-0">
+                        <div class="py-4 border-t border-slate-100 text-xs sm:text-sm text-slate-700 space-y-3">
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div class="bg-emerald-50/50 p-4 rounded-xl border border-emerald-100">
+                                    <h4 class="font-bold text-emerald-800 mb-2"><i class="fa-solid fa-code-compare mr-1.5"></i>Khái Niệm Cơ Bản</h4>
+                                    <ul class="list-disc list-inside space-y-1.5 text-slate-600">
+                                        <li><strong>Di truyền:</strong> Hiện tượng truyền đạt tính trạng từ bố mẹ, tổ tiên cho thế hệ con cháu.</li>
+                                        <li><strong>Biến dị:</strong> Hiện tượng con sinh ra khác bố mẹ và khác nhau giữa các cá thể trong cùng lứa.</li>
+                                        <li><strong>Gene:</strong> Nằm trong tế bào, quy định tính trạng của sinh vật, là trung tâm di truyền.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-teal-50/50 p-4 rounded-xl border border-teal-100">
+                                    <h4 class="font-bold text-teal-800 mb-2"><i class="fa-solid fa-spell-check mr-1.5"></i>Thuật Ngữ & Kí Hiệu</h4>
+                                    <ul class="list-disc list-inside space-y-1.5 text-slate-600">
+                                        <li><strong>Tính trạng / TT tương phản:</strong> Đặc điểm cơ thể / 2 trạng thái biểu hiện trái ngược của cùng 1 tính trạng.</li>
+                                        <li><strong>Kiểu gene / Kiểu hình:</strong> Tổ hợp gene trong tế bào / Tổ hợp tính trạng biểu hiện ra ngoài.</li>
+                                        <li><strong>Allele / Thể đồng hợp, dị hợp:</strong> Các trạng thái khác nhau của cùng 1 gene / AA, aa (đồng hợp), Aa (dị hợp).</li>
+                                        <li><strong>Kí hiệu:</strong> P (bố mẹ), &times; (lai), G (giao tử), F (thế hệ con).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BÀI 37 -->
+                <div class="border border-slate-200 rounded-2xl bg-white shadow-sm overflow-hidden">
+                    <button onclick="toggleAccordion('acc-37')" class="w-full px-5 py-3.5 text-left font-semibold text-emerald-900 bg-slate-50 hover:bg-emerald-50/50 flex justify-between items-center transition-colors">
+                        <span class="flex items-center text-sm sm:text-base">
+                            <span class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 inline-flex items-center justify-center font-bold mr-3 text-xs">37</span>
+                            Bài 37: Các Quy Luật Di Truyền Của Mendel
+                        </span>
+                        <i id="icon-acc-37" class="fa-solid fa-chevron-down text-emerald-600 transition-transform duration-300 text-xs"></i>
+                    </button>
+                    <div id="acc-37" class="accordion-content px-5 py-0">
+                        <div class="py-4 border-t border-slate-100 text-xs sm:text-sm text-slate-700 space-y-3">
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="bg-amber-50/60 p-3.5 rounded-xl border border-amber-200">
+                                    <h4 class="font-bold text-amber-900 mb-1.5"><i class="fa-solid fa-diagram-project mr-1.5"></i>Quy Luật Phân Li</h4>
+                                    <p class="text-xs text-amber-800 mb-2">Mỗi tính trạng do 1 cặp allele quy định. Khi giảm phân hình thành giao tử, các allele phân li đồng đều về các giao tử.</p>
+                                    <div class="bg-white p-2 rounded-lg text-xs font-mono border border-amber-200 text-slate-800">
+                                        P: AA &times; aa &rarr; F1: 100% Aa<br>
+                                        F2 TLKG: 1AA : 2Aa : 1aa<br>
+                                        F2 TLKH: 3 Trội : 1 Lặn
+                                    </div>
+                                </div>
+                                <div class="bg-emerald-50/60 p-3.5 rounded-xl border border-emerald-200">
+                                    <h4 class="font-bold text-emerald-900 mb-1.5"><i class="fa-solid fa-magnifying-glass mr-1.5"></i>Phép Lai Phân Tích</h4>
+                                    <p class="text-xs text-emerald-800 mb-2">Phép lai giữa cá thể mang tính trạng trội (chưa biết KG) với cá thể lặn (aa) để kiểm tra kiểu gene.</p>
+                                    <ul class="text-xs space-y-1 list-disc list-inside text-emerald-900">
+                                        <li>F1 đồng tính (100% Trội) &rarr; Cá thể P là <strong>AA (Đồng hợp)</strong>.</li>
+                                        <li>F1 phân tính (1 Trội : 1 Lặn) &rarr; Cá thể P là <strong>Aa (Dị hợp)</strong>.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-indigo-50/60 p-3.5 rounded-xl border border-indigo-200">
+                                    <h4 class="font-bold text-indigo-900 mb-1.5"><i class="fa-solid fa-shuffle mr-1.5"></i>Phân Li Độc Lập</h4>
+                                    <p class="text-xs text-indigo-800 mb-2">Các cặp allele quy định các tính trạng khác nhau phân li độc lập với nhau trong quá trình giảm phân.</p>
+                                    <div class="bg-white p-2 rounded-lg text-xs font-mono border border-indigo-200 text-slate-800">
+                                        P: AABB &times; aabb &rarr; F1: AaBb<br>
+                                        F2 TLKH: 9 : 3 : 3 : 1<br>
+                                        (Gồm 4 loại kiểu hình)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BÀI 38 -->
+                <div class="border border-slate-200 rounded-2xl bg-white shadow-sm overflow-hidden">
+                    <button onclick="toggleAccordion('acc-38')" class="w-full px-5 py-3.5 text-left font-semibold text-emerald-900 bg-slate-50 hover:bg-emerald-50/50 flex justify-between items-center transition-colors">
+                        <span class="flex items-center text-sm sm:text-base">
+                            <span class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 inline-flex items-center justify-center font-bold mr-3 text-xs">38</span>
+                            Bài 38: Nucleic Acid Về Gene (+ STEM Mô Hình DNA 3D)
+                        </span>
+                        <i id="icon-acc-38" class="fa-solid fa-chevron-down text-emerald-600 transition-transform duration-300 text-xs"></i>
+                    </button>
+                    <div id="acc-38" class="accordion-content px-5 py-0">
+                        <div class="py-4 border-t border-slate-100 text-xs sm:text-sm text-slate-700 space-y-3">
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="bg-emerald-50/50 p-4 rounded-xl border border-emerald-200 space-y-2">
+                                    <h4 class="font-bold text-emerald-900"><i class="fa-solid fa-dna mr-1.5"></i>Cấu Trúc & Chức Năng DNA</h4>
+                                    <ul class="list-disc list-inside text-xs space-y-1.5 text-slate-700">
+                                        <li><strong>Cấu trúc:</strong> Chuỗi xoắn kép gồm 2 mạch polynucleotide ngược chiều (5'-3' và 3'-5').</li>
+                                        <li><strong>Đơn phân:</strong> 4 loại nucleotide: Adenine (A), Thymine (T), Guanine (G), Cytosine (C).</li>
+                                        <li><strong>NTBS:</strong> A liên kết với T (2 liên kết H); G liên kết với C (3 liên kết H).</li>
+                                        <li><strong>Đặc thù & Đa dạng:</strong> Do số lượng, thành phần và trình tự nucleotide quy định.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-teal-50/50 p-4 rounded-xl border border-teal-200 space-y-2">
+                                    <h4 class="font-bold text-teal-900"><i class="fa-solid fa-ribbon mr-1.5"></i>Phân Tử RNA & Gene</h4>
+                                    <ul class="list-disc list-inside text-xs space-y-1.5 text-slate-700">
+                                        <li><strong>Gene:</strong> Đoạn DNA mang thông tin mã hóa sản phẩm xác định (RNA/Polypeptide).</li>
+                                        <li><strong>RNA:</strong> Cấu trúc 1 mạch, gồm 4 loại ribonucleotide (A, U, G, C).</li>
+                                        <li><strong>3 loại RNA:</strong> mRNA (thông tin), tRNA (vận chuyển amino acid), rRNA (cấu tạo ribosome).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: CÔNG CỤ SINH HỌC -->
+        <section id="tab-tools" class="hidden space-y-5">
+            <div class="grid md:grid-cols-2 gap-5">
+                <!-- CÔNG CỤ DNA -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-base font-bold text-emerald-900 flex items-center">
+                        <i class="fa-solid fa-vial-circle-check text-emerald-600 mr-2"></i> Ghép Mạch Bổ Sung DNA Tự Động
+                    </h3>
+                    <p class="text-xs text-slate-500">Nhập chuỗi nucleotide Mạch 1 (chứa kí tự A, T, G, C), công cụ sẽ tự động ghép Mạch 2 theo NTBS và tính toán số liên kết Hydrogen.</p>
+                    
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1 uppercase">Mạch 1 (5' &rarr; 3'):</label>
+                            <input type="text" id="dna-input" value="ATGCGTACGTAC" oninput="generateComplementaryDNA()" class="w-full px-3 py-2 rounded-xl border border-slate-300 font-mono uppercase text-emerald-800 tracking-widest focus:ring-2 focus:ring-emerald-500 focus:outline-none text-sm">
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 font-mono text-xs space-y-1.5">
+                            <div class="flex items-center"><span class="w-20 font-bold text-slate-500">Mạch 1:</span><span id="dna-m1" class="font-bold text-emerald-700 tracking-widest"></span></div>
+                            <div class="flex items-center text-slate-400 pl-20 space-x-1"><span>| | | | | | | | | | | |</span></div>
+                            <div class="flex items-center"><span class="w-20 font-bold text-slate-500">Mạch 2:</span><span id="dna-m2" class="font-bold text-teal-600 tracking-widest"></span></div>
+                        </div>
+                        <div id="dna-stats" class="text-xs flex flex-wrap gap-2 pt-1"></div>
+                    </div>
+                </div>
+
+                <!-- CÔNG CỤ SƠ ĐỒ LAI -->
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+                    <h3 class="text-base font-bold text-emerald-900 flex items-center">
+                        <i class="fa-solid fa-sitemap text-emerald-600 mr-2"></i> Mô Phỏng Phép Lai 1 Cặp Tính Trạng
+                    </h3>
+                    <p class="text-xs text-slate-500">Chọn kiểu gene P của Bố và Mẹ để tự động xuất ra tỉ lệ giao tử, tỉ lệ kiểu gene và kiểu hình ở đời con.</p>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Kiểu gene Bố (P1):</label>
+                            <select id="p1-select" onchange="simulateCross()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-emerald-500">
+                                <option value="AA">AA (Đồng hợp trội)</option>
+                                <option value="Aa" selected>Aa (Dị hợp)</option>
+                                <option value="aa">aa (Đồng hợp lặn)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Kiểu gene Mẹ (P2):</label>
+                            <select id="p2-select" onchange="simulateCross()" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-emerald-500">
+                                <option value="AA">AA (Đồng hợp trội)</option>
+                                <option value="Aa" selected>Aa (Dị hợp)</option>
+                                <option value="aa">aa (Đồng hợp lặn)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div id="cross-result" class="p-3 bg-emerald-50/50 border border-emerald-100 rounded-xl space-y-2"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: ĐỀ THI THỬ FIT SCREEN (1 CÂU / TRANG) -->
+        <section id="tab-exam" class="hidden flex-grow flex flex-col justify-between space-y-3 h-[calc(100vh-100px)] max-h-[800px] overflow-hidden">
+            <!-- EXAM TOP CONTROL BAR -->
+            <div class="bg-white border border-slate-200 p-3 rounded-2xl shadow-sm flex flex-wrap items-center justify-between gap-3 shrink-0">
+                <div class="flex items-center space-x-3">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-file-signature text-emerald-600"></i>
+                        <select id="exam-select" onchange="changeExam(this.value)" class="px-3 py-1.5 border border-slate-300 rounded-xl text-xs font-bold text-slate-700 bg-slate-50 focus:ring-2 focus:ring-emerald-500">
+                            <!-- 10 Exams populated dynamically -->
+                        </select>
+                    </div>
+                    <button onclick="generateRandomExam()" class="px-2.5 py-1.5 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-xl font-medium text-xs transition-colors">
+                        <i class="fa-solid fa-shuffle mr-1"></i>Trộn Đề Mới
+                    </button>
+                </div>
+
+                <div class="flex items-center space-x-3">
+                    <!-- Timer -->
+                    <div class="flex items-center space-x-2">
+                        <span id="timer-display" class="font-mono text-base font-bold px-3 py-1 bg-slate-900 text-emerald-400 rounded-lg">90:00</span>
+                        <button onclick="toggleTimer()" id="btn-timer-toggle" class="text-xs p-1.5 rounded-lg border border-slate-300 hover:bg-slate-100" title="Tạm dừng/Tiếp tục">
+                            <i class="fa-solid fa-pause"></i>
+                        </button>
+                    </div>
+
+                    <!-- Question Palette Button -->
+                    <button onclick="openPaletteModal()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-semibold shadow-sm flex items-center">
+                        <i class="fa-solid fa-border-all mr-1.5 text-amber-400"></i>Bản Đồ Câu (<span id="answered-count">0</span>/20)
+                    </button>
+
+                    <!-- Submit Button -->
+                    <button onclick="submitExam()" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs shadow-md transition-all">
+                        <i class="fa-solid fa-paper-plane mr-1"></i>Nộp Bài
+                    </button>
+                </div>
+            </div>
+
+            <!-- SCORE BANNER (Triggered on Submit) -->
+            <div id="exam-score-banner" class="hidden bg-emerald-900 text-white p-4 rounded-2xl shadow-lg shrink-0 flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-bold flex items-center">
+                        <i class="fa-solid fa-trophy text-amber-400 mr-2"></i>Kết Quả: <span id="final-score" class="ml-2 text-amber-300">0.0 / 10.0</span>
+                    </h3>
+                    <p id="score-details" class="text-xs text-emerald-200 mt-0.5"></p>
+                </div>
+                <button onclick="resetExamState()" class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-xl text-xs font-semibold">
+                    <i class="fa-solid fa-rotate-right mr-1"></i>Làm Lại
+                </button>
+            </div>
+
+            <!-- PROGRESS BAR -->
+            <div class="w-full bg-slate-200 rounded-full h-2 shrink-0 overflow-hidden">
+                <div id="exam-progress-bar" class="bg-emerald-500 h-2 transition-all duration-300" style="width: 5%;"></div>
+            </div>
+
+            <!-- SINGLE QUESTION DISPLAY CARD (FIT SCREEN NO SCROLL) -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex-grow flex flex-col justify-between overflow-y-auto min-h-0">
+                <div id="question-card-content" class="space-y-4">
+                    <!-- Question Header & Text populated by JS -->
+                </div>
+
+                <!-- QUESTION NAVIGATION BUTTONS -->
+                <div class="flex items-center justify-between pt-4 border-t border-slate-100 shrink-0 mt-4">
+                    <button onclick="prevQuestion()" id="btn-prev-q" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold disabled:opacity-40 transition-colors">
+                        <i class="fa-solid fa-arrow-left mr-1.5"></i>Câu Trước
+                    </button>
+                    <span id="q-counter-text" class="text-xs font-bold text-slate-500">Câu 1 / 20</span>
+                    <button onclick="nextQuestion()" id="btn-next-q" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold transition-colors">
+                        Câu Tiếp<i class="fa-solid fa-arrow-right ml-1.5"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL: QUESTION PALETTE (BẢN ĐỒ CÂU HỎI) -->
+    <div id="palette-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-5 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-bold text-slate-800 text-base flex items-center">
+                    <i class="fa-solid fa-border-all text-emerald-600 mr-2"></i>Bản Đồ Câu Hỏi (20 Câu)
+                </h3>
+                <button onclick="closePaletteModal()" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <p class="text-xs text-slate-500">Nhấp vào ô câu hỏi bên dưới để chuyển nhanh. Các câu màu xanh lá là câu bạn đã điền/chọn đáp án.</p>
+
+            <div id="palette-grid" class="grid grid-cols-5 gap-2.5 max-h-60 overflow-y-auto p-1">
+                <!-- 20 Question Buttons populated by JS -->
+            </div>
+
+            <div class="flex items-center justify-between pt-2 text-xs text-slate-500">
+                <span class="flex items-center"><span class="w-3 h-3 bg-emerald-500 rounded-md mr-1.5"></span>Đã trả lời</span>
+                <span class="flex items-center"><span class="w-3 h-3 bg-slate-200 rounded-md mr-1.5"></span>Chưa trả lời</span>
+                <button onclick="closePaletteModal()" class="px-4 py-1.5 bg-emerald-600 text-white rounded-xl font-bold">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 py-3 border-t border-slate-800 text-center text-[11px] shrink-0">
+        <div class="max-w-7xl mx-auto px-4">
+            <p class="font-medium text-slate-300">Đề Cương & Bộ 10 Đề Luyện Thi Giữa Kì 1 - KHTN 9 (Sinh Học) • THCS Trần Phú</p>
+            <p class="mt-0.5 text-slate-500">Giáo viên hướng dẫn: <strong class="text-emerald-400">Cô Thùy Dương Lê</strong> • Năm học 2026 - 2027</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC ENGINE -->
+    <script>
+        // --- 1. TAB & ACCORDION SYSTEM ---
+        function switchTab(tabId) {
+            document.getElementById('tab-theory').classList.add('hidden');
+            document.getElementById('tab-tools').classList.add('hidden');
+            document.getElementById('tab-exam').classList.add('hidden');
+
+            document.getElementById('nav-theory').className = "px-3 py-1.5 rounded-lg font-medium transition-all duration-200 text-emerald-100 hover:text-white";
+            document.getElementById('nav-tools').className = "px-3 py-1.5 rounded-lg font-medium transition-all duration-200 text-emerald-100 hover:text-white";
+            document.getElementById('nav-exam').className = "px-3 py-1.5 rounded-lg font-medium transition-all duration-200 text-emerald-100 hover:text-white";
+
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            activeNav.className = "px-3 py-1.5 rounded-lg font-medium transition-all duration-200 bg-white text-emerald-800 shadow";
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById(`icon-${id}`);
+            content.classList.toggle('active');
+            icon.style.transform = content.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+
+        // --- 2. GENETICS TOOLS LOGIC ---
+        function generateComplementaryDNA() {
+            const input = document.getElementById('dna-input').value.toUpperCase().replace(/[^ATGC]/g, '');
+            document.getElementById('dna-input').value = input;
+
+            let m1Arr = input.split('');
+            let m2Arr = m1Arr.map(n => {
+                if (n === 'A') return 'T';
+                if (n === 'T') return 'A';
+                if (n === 'G') return 'C';
+                if (n === 'C') return 'G';
+                return '';
+            });
+
+            document.getElementById('dna-m1').innerText = m1Arr.join(' ');
+            document.getElementById('dna-m2').innerText = m2Arr.join(' ');
+
+            let countA = m1Arr.filter(x => x === 'A').length;
+            let countT = m1Arr.filter(x => x === 'T').length;
+            let countG = m1Arr.filter(x => x === 'G').length;
+            let countC = m1Arr.filter(x => x === 'C').length;
+            let totalN = m1Arr.length * 2;
+            let totalH = (countA + countT) * 2 + (countG + countC) * 3;
+
+            document.getElementById('dna-stats').innerHTML = `
+                <span class="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-semibold">Tổng N = ${totalN}</span>
+                <span class="bg-teal-100 text-teal-800 px-2 py-0.5 rounded-md font-semibold">H = ${totalH} liên kết</span>
+                <span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md">A = T = ${countA + countT}</span>
+                <span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md">G = C = ${countG + countC}</span>
+            `;
+        }
+
+        function simulateCross() {
+            const p1 = document.getElementById('p1-select').value;
+            const p2 = document.getElementById('p2-select').value;
+
+            function getGametes(genotype) {
+                if (genotype === 'AA') return [{ allele: 'A', prob: 1 }];
+                if (genotype === 'aa') return [{ allele: 'a', prob: 1 }];
+                return [{ allele: 'A', prob: 0.5 }, { allele: 'a', prob: 0.5 }];
+            }
+
+            const g1 = getGametes(p1);
+            const g2 = getGametes(p2);
+
+            let progeny = {};
+            g1.forEach(item1 => {
+                g2.forEach(item2 => {
+                    let combo = [item1.allele, item2.allele].sort().join('');
+                    let prob = item1.prob * item2.prob;
+                    progeny[combo] = (progeny[combo] || 0) + prob;
+                });
+            });
+
+            let kgText = Object.keys(progeny).map(k => `${progeny[k] * 100}% ${k}`).join(' : ');
+            let dominantProb = (progeny['AA'] || 0) + (progeny['Aa'] || 0);
+            let recessiveProb = (progeny['aa'] || 0);
+            let khText = `${dominantProb * 100}% Trội : ${recessiveProb * 100}% Lặn`;
+
+            document.getElementById('cross-result').innerHTML = `
+                <div class="text-xs space-y-1">
+                    <p><strong>Sơ đồ lai:</strong> P: ${p1} &times; ${p2}</p>
+                    <p><strong>Giao tử P:</strong> G<sub>P1</sub>: ${g1.map(x => x.allele).join(', ')} | G<sub>P2</sub>: ${g2.map(x => x.allele).join(', ')}</p>
+                    <p><strong>Tỉ lệ kiểu gene F1:</strong> <span class="font-mono text-emerald-800 font-semibold">${kgText}</span></p>
+                    <p><strong>Tỉ lệ kiểu hình F1:</strong> <span class="font-mono text-teal-800 font-semibold">${khText}</span></p>
+                </div>
+            `;
+        }
+
+        // --- 3. QUESTION BANK (10 EQUIVALENT EXAMS) ---
+        // Helper to shuffle arrays (for anti-memorization)
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Base question items for generating 10 exams
+        const rawMCQPool = [
+            { q: "Hiện tượng truyền đạt các tính trạng của bố mẹ, tổ tiên cho thế hệ con cháu được gọi là gì?", opts: ["Di truyền", "Biến dị", "Phép lai phân tích", "Thể đồng hợp"], ans: 0, exp: "Di truyền là hiện tượng truyền đạt các tính trạng của bố mẹ cho con cháu." },
+            { q: "Trạng thái biểu hiện trái ngược nhau của cùng một loại tính trạng được gọi là", opts: ["Tính trạng tương phản", "Kiểu hình", "Dòng thuần chủng", "Thể dị hợp"], ans: 0, exp: "Tính trạng tương phản là 2 trạng thái biểu hiện trái ngược nhau của cùng loại tính trạng." },
+            { q: "Tập hợp toàn bộ các gene trong tế bào của cơ thể sinh vật được gọi là", opts: ["Kiểu gene", "Kiểu hình", "Allele", "Tính trạng"], ans: 0, exp: "Kiểu gene là tổ hợp toàn bộ gene trong tế bào." },
+            { q: "Ở đậu Hà Lan, kiểu gene nào đại diện cho thể dị hợp quy định một cặp tính trạng?", opts: ["Aa", "AA", "aa", "AABB"], ans: 0, exp: "Thể dị hợp mang 2 allele khác nhau của cùng gene (Aa)." },
+            { q: "Theo quy luật phân li của Mendel, tỉ lệ kiểu hình thu được ở F2 khi F1 dị hợp tự thụ phấn là", opts: ["3 Trội : 1 Lặn", "1 Trội : 1 Lặn", "100% Trội", "9 : 3 : 3 : 1"], ans: 0, exp: "F1 (Aa) x F1 (Aa) -> Tỉ lệ kiểu hình F2 là 3 Trội : 1 Lặn." },
+            { q: "Phép lai nào sau đây được gọi là phép lai phân tích?", opts: ["Aa x aa", "AA x AA", "Aa x AA", "aa x aa"], ans: 0, exp: "Phép lai phân tích là lai cá thể mang tính trạng trội với cá thể lặn (aa)." },
+            { q: "Khi kết quả phép lai phân tích thu được 100% con lai mang tính trạng trội, kiểu gene P là", opts: ["Đồng hợp trội (AA)", "Dị hợp (Aa)", "Đồng hợp lặn (aa)", "Không xác định"], ans: 0, exp: "Con lai đồng nhất -> Cá thể trội P mang kiểu gene đồng hợp (AA)." },
+            { q: "Đơn phân cấu tạo nên phân tử DNA bao gồm 4 loại nucleotide là", opts: ["A, T, G, C", "A, U, G, C", "A, T, U, C", "T, U, G, C"], ans: 0, exp: "DNA cấu tạo từ 4 loại nucleotide A, T, G, C." },
+            { q: "Theo NTBS trong phân tử DNA, nucleotide loại A liên kết với nucleotide loại nào?", opts: ["Thymine (T)", "Guanine (G)", "Cytosine (C)", "Uracil (U)"], ans: 0, exp: "A liên kết với T bằng 2 liên kết hydrogen." },
+            { q: "Yếu tố quy định tính đa dạng và đặc thù của phân tử DNA là", opts: ["Số lượng, thành phần và trình tự nucleotide", "Số lượng liên kết peptide", "Số lượng chuỗi polypeptide", "Cấu trúc xoắn đơn"], ans: 0, exp: "Trình tự, số lượng, thành phần nucleotide tạo nên tính đặc thù/đa dạng của DNA." },
+            { q: "Loại RNA nào có chức năng vận chuyển amino acid tới nơi tổng hợp chuỗi polypeptide?", opts: ["tRNA", "mRNA", "rRNA", "DNA"], ans: 0, exp: "tRNA đảm nhận nhiệm vụ vận chuyển amino acid." },
+            { q: "Đoạn phân tử DNA mang thông tin mã hóa một sản phẩm xác định được gọi là", opts: ["Gene", "Allele", "Karyotype", "Phenotype"], ans: 0, exp: "Gene là đoạn phân tử DNA có chức năng di truyền xác định." },
+            { q: "Hiện tượng con sinh ra có đặc điểm khác bố mẹ và khác nhau giữa các cá thể cùng lứa là", opts: ["Biến dị", "Di truyền", "Dòng thuần", "Thể đồng hợp"], ans: 0, exp: "Biến dị là hiện tượng xuất hiện các đặc điểm sai khác so với bố mẹ." },
+            { q: "Cơ thể thuần chủng về một tính trạng là cơ thể có kiểu gene quy định tính trạng đó ở dạng", opts: ["Đồng hợp (AA hoặc aa)", "Dị hợp (Aa)", "Chỉ mang allele trội", "Chỉ mang allele lặn"], ans: 0, exp: "Dòng thuần chủng mang cặp allele giống nhau (AA hoặc aa)." }
+        ];
+
+        const rawTFPool = [
+            {
+                title: "Xét cấu trúc và chức năng của phân tử DNA:",
+                context: "DNA là đại phân tử sinh học chứa thông tin di truyền của sinh vật.",
+                items: [
+                    { key: "a", text: "Đơn phân của DNA gồm 4 loại ribonucleotide A, U, G, C.", ans: false },
+                    { key: "b", text: "A liên kết với T bằng 2 liên kết hydrogen, G liên kết với C bằng 3 liên kết hydrogen.", ans: true },
+                    { key: "c", text: "Trình tự nucleotide trên DNA quy định thông tin di truyền.", ans: true },
+                    { key: "d", text: "Tất cả các loài sinh vật đều có trình tự nucleotide trên DNA hoàn toàn giống nhau.", ans: false }
+                ]
+            },
+            {
+                title: "Thí nghiệm lai một cặp tính trạng của Mendel ở đậu Hà Lan:",
+                context: "P thuần chủng Hoa tím (AA) x Hoa trắng (aa) thu được F1, F1 tự thụ phấn thu được F2.",
+                items: [
+                    { key: "a", text: "Tính trạng hoa tím trội hoàn toàn so với tính trạng hoa trắng.", ans: true },
+                    { key: "b", text: "Tỉ lệ kiểu gene ở F2 thu được là 3 AA : 1 aa.", ans: false },
+                    { key: "c", text: "Ở F2 thu được tỉ lệ kiểu hình 3 hoa tím : 1 hoa trắng.", ans: true },
+                    { key: "d", text: "Tất cả các cây hoa tím ở F2 đều có kiểu gene đồng hợp.", ans: false }
+                ]
+            },
+            {
+                title: "Xét cấu trúc và chức năng của các loại phân tử RNA:",
+                context: "RNA được tổng hợp dựa trên khuôn mẫu của phân tử DNA.",
+                items: [
+                    { key: "a", text: "Phân tử RNA có cấu trúc xoắn kép gồm 2 mạch song song.", ans: false },
+                    { key: "b", text: "mRNA có nhiệm vụ truyền đạt thông tin di truyền từ DNA đến ribosome.", ans: true },
+                    { key: "c", text: "Thành phần đơn phân của RNA gồm 4 loại ribonucleotide A, U, G, C.", ans: true },
+                    { key: "d", text: "tRNA là thành phần chủ yếu cấu tạo nên cấu trúc của ribosome.", ans: false }
+                ]
+            }
+        ];
+
+        const rawSAPool = [
+            { q: "Ở đậu Hà Lan, allele A quy định thân cao, a quy định thân thấp. Có bao nhiêu kiểu gene quy định kiểu hình thân cao?", ans: "2", exp: "Có 2 kiểu gene quy định thân cao: AA và Aa." },
+            { q: "Một đoạn mạch đơn DNA có trình tự 5'-ATGC-3'. Mạch bổ sung chứa bao nhiêu nucleotide loại T?", ans: "1", exp: "Mạch bổ sung là 3'-TACG-5', chứa 1 T." },
+            { q: "Cho F1 dị hợp (AaBb) tự thụ phấn trong quy luật phân li độc lập, thu được bao nhiêu loại kiểu hình ở F2?", ans: "4", exp: "Thu được 4 loại kiểu hình với tỉ lệ 9:3:3:1." },
+            { q: "Phân tử DNA có A = 600 nucleotide. Theo NTBS, số nucleotide loại T của phân tử này bằng bao nhiêu?", ans: "600", exp: "Theo NTBS, A = T = 600." }
+        ];
+
+        const rawEssayPool = [
+            {
+                title: "Bài tập tự luận Sơ đồ lai Mendel (3,0 điểm)",
+                prompt: "Ở đậu Hà Lan, hoa tím (A) trội hoàn toàn so với hoa trắng (a). Cho cây hoa tím thuần chủng lai với cây hoa trắng thu được F1. Cho F1 tự thụ phấn thu được F2.\na) Viết sơ đồ lai từ P đến F2 và xác định tỉ lệ kiểu gene, kiểu hình ở F2.\nb) Trình bày phương pháp kiểm tra cây hoa tím F2 có thuần chủng hay không.",
+                solution: "a) Sơ đồ lai:\nP: AA (tím) x aa (trắng)\nGp: A | a\nF1: 100% Aa (hoa tím)\nF1 x F1: Aa x Aa\nF2 TLKG: 1 AA : 2 Aa : 1 aa\nF2 TLKH: 3 Hoa tím : 1 Hoa trắng.\n\nb) Dùng phép lai phân tích: Lai cây hoa tím F2 với cây hoa trắng (aa).\n- Nếu đời con 100% hoa tím -> Cây F2 là AA (thuần chủng).\n- Nếu đời con phân tính 1 tím : 1 trắng -> Cây F2 là Aa (không thuần chủng)."
+            }
+        ];
+
+        // Generate 10 Exams Engine with option shuffling
+        let examsBank = [];
+
+        function buildExamsBank() {
+            examsBank = [];
+            for (let e = 1; e <= 10; e++) {
+                // Shuffle MCQ question options
+                let mcqList = rawMCQPool.slice(0, 12).map((item, idx) => {
+                    let shuffledOpts = item.opts.map((opt, oIdx) => ({ text: opt, isCorrect: oIdx === item.ans }));
+                    shuffledOpts = shuffleArray(shuffledOpts);
+                    return {
+                        id: idx + 1,
+                        question: item.q,
+                        options: shuffledOpts.map(o => o.text),
+                        correct: shuffledOpts.findIndex(o => o.isCorrect),
+                        explain: item.exp
+                    };
+                });
+
+                // Shuffle MCQ order
+                mcqList = shuffleArray(mcqList).map((q, i) => ({ ...q, id: i + 1 }));
+
+                examsBank.push({
+                    examId: e,
+                    title: `Đề Thi Thử Số ${e}`,
+                    mcq: mcqList,
+                    tf: rawTFPool,
+                    sa: rawSAPool,
+                    essay: rawEssayPool[0]
+                });
+            }
+        }
+
+        // --- 4. EXAM ENGINE STATE & NAVIGATION ---
+        let currentExamIndex = 0;
+        let currentQuestionIndex = 0; // 0 to 19 (12 MCQ + 3 TF + 4 SA + 1 Essay)
+        let userAnswers = {}; // Map of qKey -> answer
+        let isSubmitted = false;
+
+        function initExamSelect() {
+            const select = document.getElementById('exam-select');
+            select.innerHTML = examsBank.map((ex, idx) => `<option value="${idx}">Đề Thi Thử Số ${ex.examId}</option>`).join('');
+        }
+
+        function changeExam(idx) {
+            currentExamIndex = parseInt(idx);
+            resetExamState();
+        }
+
+        function generateRandomExam() {
+            currentExamIndex = Math.floor(Math.random() * 10);
+            document.getElementById('exam-select').value = currentExamIndex;
+            // Re-shuffle current exam's options
+            buildExamsBank();
+            resetExamState();
+        }
+
+        function resetExamState() {
+            userAnswers = {};
+            isSubmitted = false;
+            currentQuestionIndex = 0;
+            document.getElementById('exam-score-banner').classList.add('hidden');
+            updateProgressBar();
+            updateAnsweredCount();
+            renderCurrentQuestion();
+        }
+
+        function renderCurrentQuestion() {
+            const exam = examsBank[currentExamIndex];
+            const content = document.getElementById('question-card-content');
+            const totalQ = 20;
+
+            document.getElementById('q-counter-text').innerText = `Câu ${currentQuestionIndex + 1} / ${totalQ}`;
+            document.getElementById('btn-prev-q').disabled = (currentQuestionIndex === 0);
+
+            // Index 0..11: MCQ | 12..14: TF | 15..18: SA | 19: Essay
+            if (currentQuestionIndex < 12) {
+                // PART I: MCQ
+                const q = exam.mcq[currentQuestionIndex];
+                const selected = userAnswers[`mcq-${q.id}`];
+
+                content.innerHTML = `
+                    <div>
+                        <span class="bg-emerald-100 text-emerald-800 text-[11px] font-bold px-2.5 py-0.5 rounded-md uppercase">Phần I: Trắc nghiệm (0,25đ)</span>
+                        <h3 class="text-sm sm:text-base font-bold text-slate-900 mt-2">Câu ${currentQuestionIndex + 1}: ${q.question}</h3>
+                    </div>
+                    <div class="grid sm:grid-cols-2 gap-2.5 pt-2">
+                        ${q.options.map((opt, oIdx) => {
+                            const isChecked = selected === oIdx;
+                            return `
+                                <label onclick="saveMCQAnswer(${q.id}, ${oIdx})" class="flex items-center p-3 rounded-xl border ${isChecked ? 'border-emerald-500 bg-emerald-50/80 ring-2 ring-emerald-400' : 'border-slate-200 bg-white hover:bg-slate-50'} cursor-pointer text-xs sm:text-sm transition-all">
+                                    <input type="radio" name="mcq-${q.id}" ${isChecked ? 'checked' : ''} class="text-emerald-600 focus:ring-emerald-500 mr-3">
+                                    <span class="font-medium text-slate-800"><strong class="mr-1">${String.fromCharCode(65 + oIdx)}.</strong> ${opt}</span>
+                                </label>
+                            `;
+                        }).join('')}
+                    </div>
+                    ${isSubmitted ? `
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs mt-3">
+                            <p class="${selected === q.correct ? 'text-emerald-700 font-bold' : 'text-rose-600 font-bold'}">
+                                ${selected === q.correct ? '<i class="fa-solid fa-circle-check mr-1"></i>Chính xác (+0,25đ)' : `<i class="fa-solid fa-circle-xmark mr-1"></i>Chưa đúng. Đáp án đúng là: ${String.fromCharCode(65 + q.correct)}`}
+                            </p>
+                            <p class="text-slate-600 mt-1">${q.explain}</p>
+                        </div>
+                    ` : ''}
+                `;
+            } else if (currentQuestionIndex >= 12 && currentQuestionIndex < 15) {
+                // PART II: TRUE / FALSE
+                const tfIdx = currentQuestionIndex - 12;
+                const q = exam.tf[tfIdx];
+
+                content.innerHTML = `
+                    <div>
+                        <span class="bg-amber-100 text-amber-800 text-[11px] font-bold px-2.5 py-0.5 rounded-md uppercase">Phần II: Đúng/Sai (1,0đ/câu)</span>
+                        <h3 class="text-sm sm:text-base font-bold text-slate-900 mt-2">Câu ${currentQuestionIndex + 1}: ${q.title}</h3>
+                        <p class="text-xs text-slate-600 italic bg-slate-50 p-2.5 rounded-xl border border-slate-200 mt-1">${q.context}</p>
+                    </div>
+                    <div class="space-y-2 pt-1">
+                        ${q.items.map(item => {
+                            const ansVal = userAnswers[`tf-${tfIdx}-${item.key}`];
+                            return `
+                                <div class="flex flex-wrap sm:flex-nowrap items-center justify-between p-2.5 bg-slate-50/50 rounded-xl border border-slate-200 text-xs gap-2">
+                                    <span class="text-slate-800 font-medium flex-grow"><strong>${item.key})</strong> ${item.text}</span>
+                                    <div class="flex items-center space-x-3 shrink-0 font-semibold">
+                                        <label onclick="saveTFAnswer(${tfIdx}, '${item.key}', true)" class="flex items-center space-x-1 cursor-pointer px-2 py-1 rounded-lg ${ansVal === true ? 'bg-emerald-600 text-white' : 'bg-white text-slate-700 border border-slate-200'}">
+                                            <input type="radio" ${ansVal === true ? 'checked' : ''} class="hidden"><span>Đúng</span>
+                                        </label>
+                                        <label onclick="saveTFAnswer(${tfIdx}, '${item.key}', false)" class="flex items-center space-x-1 cursor-pointer px-2 py-1 rounded-lg ${ansVal === false ? 'bg-rose-600 text-white' : 'bg-white text-slate-700 border border-slate-200'}">
+                                            <input type="radio" ${ansVal === false ? 'checked' : ''} class="hidden"><span>Sai</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    ${isSubmitted ? `
+                        <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs mt-2 text-emerald-900">
+                            <strong>Đáp án đúng:</strong> a-${q.items[0].ans ? 'Đúng' : 'Sai'}, b-${q.items[1].ans ? 'Đúng' : 'Sai'}, c-${q.items[2].ans ? 'Đúng' : 'Sai'}, d-${q.items[3].ans ? 'Đúng' : 'Sai'}.
+                        </div>
+                    ` : ''}
+                `;
+            } else if (currentQuestionIndex >= 15 && currentQuestionIndex < 19) {
+                // PART III: SHORT ANSWER
+                const saIdx = currentQuestionIndex - 15;
+                const q = exam.sa[saIdx];
+                const userVal = userAnswers[`sa-${saIdx}`] || '';
+
+                content.innerHTML = `
+                    <div>
+                        <span class="bg-indigo-100 text-indigo-800 text-[11px] font-bold px-2.5 py-0.5 rounded-md uppercase">Phần III: Trả lời ngắn (0,25đ)</span>
+                        <h3 class="text-sm sm:text-base font-bold text-slate-900 mt-2">Câu ${currentQuestionIndex + 1}: ${q.q}</h3>
+                    </div>
+                    <div class="space-y-3 pt-2">
+                        <input type="text" value="${userVal}" oninput="saveSAAnswer(${saIdx}, this.value)" placeholder="Nhập câu trả lời ngắn của bạn (số hoặc chữ)..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                    ${isSubmitted ? `
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs mt-3">
+                            <p class="${userVal.trim().toLowerCase() === q.ans.toLowerCase() ? 'text-emerald-700 font-bold' : 'text-rose-600 font-bold'}">
+                                ${userVal.trim().toLowerCase() === q.ans.toLowerCase() ? '<i class="fa-solid fa-circle-check mr-1"></i>Chính xác (+0,25đ)' : `<i class="fa-solid fa-circle-xmark mr-1"></i>Đáp án đúng: ${q.ans}`}
+                            </p>
+                            <p class="text-slate-600 mt-1">${q.exp}</p>
+                        </div>
+                    ` : ''}
+                `;
+            } else {
+                // PART IV: ESSAY
+                const q = exam.essay;
+                const userVal = userAnswers['essay'] || '';
+
+                content.innerHTML = `
+                    <div>
+                        <span class="bg-purple-100 text-purple-800 text-[11px] font-bold px-2.5 py-0.5 rounded-md uppercase">Phần IV: Tự luận Vận dụng (3,0 điểm)</span>
+                        <h3 class="text-sm sm:text-base font-bold text-slate-900 mt-2">${q.title}</h3>
+                        <p class="text-xs text-slate-700 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200 mt-2 whitespace-pre-line">${q.prompt}</p>
+                    </div>
+                    <div class="space-y-2 pt-1">
+                        <textarea oninput="saveEssayAnswer(this.value)" rows="5" placeholder="Nhập lời giải bài tập tự luận của bạn..." class="w-full p-3 rounded-xl border border-slate-300 text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">${userVal}</textarea>
+                    </div>
+                    <div id="essay-sol-box" class="${isSubmitted ? '' : 'hidden'} p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-slate-800 space-y-1.5">
+                        <p class="font-bold text-emerald-900"><i class="fa-solid fa-lightbulb mr-1.5"></i>Lời giải mẫu & Sơ đồ lai chi tiết:</p>
+                        <p class="font-mono whitespace-pre-line text-emerald-950">${q.solution}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // SAVE ANSWERS
+        function saveMCQAnswer(qId, oIdx) {
+            userAnswers[`mcq-${qId}`] = oIdx;
+            updateAnsweredCount();
+            renderCurrentQuestion();
+        }
+
+        function saveTFAnswer(tfIdx, key, val) {
+            userAnswers[`tf-${tfIdx}-${key}`] = val;
+            updateAnsweredCount();
+            renderCurrentQuestion();
+        }
+
+        function saveSAAnswer(saIdx, val) {
+            userAnswers[`sa-${saIdx}`] = val;
+            updateAnsweredCount();
+        }
+
+        function saveEssayAnswer(val) {
+            userAnswers['essay'] = val;
+            updateAnsweredCount();
+        }
+
+        function updateAnsweredCount() {
+            let count = 0;
+            const exam = examsBank[currentExamIndex];
+
+            // MCQ
+            exam.mcq.forEach(q => { if (userAnswers[`mcq-${q.id}`] !== undefined) count++; });
+            // TF
+            for (let i = 0; i < 3; i++) {
+                let hasAny = ['a', 'b', 'c', 'd'].some(k => userAnswers[`tf-${i}-${k}`] !== undefined);
+                if (hasAny) count++;
+            }
+            // SA
+            for (let i = 0; i < 4; i++) {
+                if (userAnswers[`sa-${i}`] && userAnswers[`sa-${i}`].trim() !== '') count++;
+            }
+            // Essay
+            if (userAnswers['essay'] && userAnswers['essay'].trim() !== '') count++;
+
+            document.getElementById('answered-count').innerText = count;
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < 19) {
+                currentQuestionIndex++;
+                updateProgressBar();
+                renderCurrentQuestion();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                updateProgressBar();
+                renderCurrentQuestion();
+            }
+        }
+
+        function updateProgressBar() {
+            const pct = ((currentQuestionIndex + 1) / 20) * 100;
+            document.getElementById('exam-progress-bar').style.width = `${pct}%`;
+        }
+
+        // --- 5. QUESTION PALETTE MODAL ---
+        function openPaletteModal() {
+            const grid = document.getElementById('palette-grid');
+            let html = '';
+
+            for (let i = 0; i < 20; i++) {
+                let isAnswered = false;
+                if (i < 12) {
+                    isAnswered = userAnswers[`mcq-${i + 1}`] !== undefined;
+                } else if (i >= 12 && i < 15) {
+                    let tfIdx = i - 12;
+                    isAnswered = ['a', 'b', 'c', 'd'].some(k => userAnswers[`tf-${tfIdx}-${k}`] !== undefined);
+                } else if (i >= 15 && i < 19) {
+                    let saIdx = i - 15;
+                    isAnswered = userAnswers[`sa-${saIdx}`] && userAnswers[`sa-${saIdx}`].trim() !== '';
+                } else {
+                    isAnswered = userAnswers['essay'] && userAnswers['essay'].trim() !== '';
+                }
+
+                html += `
+                    <button onclick="jumpToQuestion(${i})" class="py-2 rounded-xl text-xs font-bold border transition-all ${i === currentQuestionIndex ? 'ring-2 ring-emerald-600 font-extrabold' : ''} ${isAnswered ? 'bg-emerald-500 text-white border-emerald-600' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'}">
+                        Câu ${i + 1}
+                    </button>
+                `;
+            }
+
+            grid.innerHTML = html;
+            document.getElementById('palette-modal').classList.remove('hidden');
+        }
+
+        function closePaletteModal() {
+            document.getElementById('palette-modal').classList.add('hidden');
+        }
+
+        function jumpToQuestion(index) {
+            currentQuestionIndex = index;
+            updateProgressBar();
+            renderCurrentQuestion();
+            closePaletteModal();
+        }
+
+        // --- 6. TIMER ENGINE ---
+        let timerSeconds = 90 * 60;
+        let timerInterval = null;
+        let isTimerRunning = false;
+
+        function startTimer() {
+            if (isTimerRunning) return;
+            isTimerRunning = true;
+            timerInterval = setInterval(() => {
+                if (timerSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Đã hết 90 phút làm bài! Hệ thống sẽ nộp bài và chấm điểm.");
+                    submitExam();
+                    return;
+                }
+                timerSeconds--;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('btn-timer-toggle');
+            if (isTimerRunning) {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                btn.innerHTML = `<i class="fa-solid fa-play"></i>`;
+            } else {
+                startTimer();
+                btn.innerHTML = `<i class="fa-solid fa-pause"></i>`;
+            }
+        }
+
+        function updateTimerDisplay() {
+            const m = Math.floor(timerSeconds / 60);
+            const s = timerSeconds % 60;
+            document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        // --- 7. GRADING & CELEBRATION ENGINE ---
+        function submitExam() {
+            isSubmitted = true;
+            const exam = examsBank[currentExamIndex];
+
+            let mcqScore = 0;
+            let tfScore = 0;
+            let saScore = 0;
+
+            // Grade MCQ (12 * 0.25 = 3.0)
+            exam.mcq.forEach(q => {
+                if (userAnswers[`mcq-${q.id}`] === q.correct) mcqScore += 0.25;
+            });
+
+            // Grade TF (3 * 4 * 0.25 = 3.0)
+            exam.tf.forEach((q, idx) => {
+                q.items.forEach(item => {
+                    if (userAnswers[`tf-${idx}-${item.key}`] === item.ans) tfScore += 0.25;
+                });
+            });
+
+            // Grade SA (4 * 0.25 = 1.0)
+            exam.sa.forEach((q, idx) => {
+                const val = (userAnswers[`sa-${idx}`] || '').trim().toLowerCase();
+                if (val === q.ans.toLowerCase()) saScore += 0.25;
+            });
+
+            let autoTotal = mcqScore + tfScore + saScore; // Max 7.0 (Self-grade 3.0 for essay)
+
+            // Display Score Banner
+            const banner = document.getElementById('exam-score-banner');
+            banner.classList.remove('hidden');
+            document.getElementById('final-score').innerText = `${autoTotal.toFixed(2)} / 7.0 (Trắc nghiệm)`;
+            document.getElementById('score-details').innerText = `Chi tiết: Trắc nghiệm MCQ: ${mcqScore.toFixed(2)}/3.0đ | Đúng/Sai: ${tfScore.toFixed(2)}/3.0đ | Trả lời ngắn: ${saScore.toFixed(2)}/1.0đ. (Thí sinh tự đối chiếu 3,0đ tự luận ở câu số 20).`;
+
+            // Trigger Confetti Celebration if Score >= 5.5/7.0
+            if (autoTotal >= 5.5 && typeof confetti === 'function') {
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            }
+
+            renderCurrentQuestion();
+        }
+
+        // --- INIT ON LOAD ---
+        window.onload = function() {
+            generateComplementaryDNA();
+            simulateCross();
+            buildExamsBank();
+            initExamSelect();
+            resetExamState();
+            startTimer();
+        };
+    </script>
+</body>
+</html>
